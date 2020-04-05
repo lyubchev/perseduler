@@ -1,5 +1,6 @@
-import React from 'react'
-import { withTheme } from 'emotion-theming'
+import React from 'react';
+import { withTheme } from 'emotion-theming';
+import withAuth from '../hocs/withAuth';
 import {
   Link as ChakraLink,
   Text,
@@ -7,15 +8,15 @@ import {
   Icon,
   List,
   ListIcon,
-  ListItem,
-} from '@chakra-ui/core'
+  ListItem
+} from '@chakra-ui/core';
 
-import { Hero } from '../components/Hero'
-import { Container } from '../components/Container'
-import { Main } from '../components/Main'
-import { DarkModeSwitch } from '../components/DarkModeSwitch'
-import { CTA } from '../components/CTA'
-import { Footer } from '../components/Footer'
+import { Hero } from '../components/Hero';
+import { Container } from '../components/Container';
+import { Main } from '../components/Main';
+import { DarkModeSwitch } from '../components/DarkModeSwitch';
+import { CTA } from '../components/CTA';
+import { Footer } from '../components/Footer';
 
 const Index = () => (
   <Container>
@@ -52,6 +53,6 @@ const Index = () => (
     </Footer>
     <CTA />
   </Container>
-)
+);
 
-export default withTheme(Index)
+export default withAuth(Index);
