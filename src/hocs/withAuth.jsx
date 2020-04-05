@@ -1,25 +1,25 @@
-import React from 'react';
-import Router from 'next/router';
-import { Spinner } from '../@chakra-ui/core';
-import firebase from '../firebase';
+import React from "react"
+import Router from "next/router"
+import { Spinner } from "@chakra-ui/core"
+import firebase from "../firebase"
 
 const withAuth = Component => props => {
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = React.useState(true)
 
   React.useEffect(() => {
     firebase.auth.onAuthStateChanged(authUser => {
       if (authUser) {
-        setLoading(false);
+        setLoading(false)
       } else {
-        Router.push('/');
+        Router.push("/")
       }
-    });
-  }, []);
+    })
+  }, [])
 
   if (loading) {
-    return <Spinner color="red.500" />;
+    return <Spinner color="red.500" />
   } else {
-    return <Component {...props} />;
+    return <Component {...props} />
   }
-};
-export default withAuth;
+}
+export default withAuth

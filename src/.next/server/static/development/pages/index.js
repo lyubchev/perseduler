@@ -88,7 +88,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -384,6 +384,148 @@ const Main = props => __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_1__["Stack"
 
 /***/ }),
 
+/***/ "./firebase/index.js":
+/*!***************************!*\
+  !*** ./firebase/index.js ***!
+  \***************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var firebase_app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! firebase/app */ "firebase/app");
+/* harmony import */ var firebase_app__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(firebase_app__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var firebase_auth__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! firebase/auth */ "firebase/auth");
+/* harmony import */ var firebase_auth__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(firebase_auth__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var firebase_firestore__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! firebase/firestore */ "firebase/firestore");
+/* harmony import */ var firebase_firestore__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(firebase_firestore__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+const config = {
+  apiKey: "AIzaSyBnGNTanSV6KD9GOxXUXQ29iGUysNPaLNM",
+  authDomain: "perseduler.firebaseapp.com",
+  databaseURL: "https://perseduler.firebaseio.com",
+  projectId: "perseduler",
+  storageBucket: "perseduler.appspot.com",
+  messagingSenderId: "719028451432",
+  appId: "1:719028451432:web:a5738df4b32f084e50e3dd",
+  measurementId: "G-MGJNDW5248"
+};
+
+class Firebase {
+  constructor() {
+    // https://github.com/zeit/next.js/issues/1999
+    if (!firebase_app__WEBPACK_IMPORTED_MODULE_0___default.a.apps.length) {
+      firebase_app__WEBPACK_IMPORTED_MODULE_0___default.a.initializeApp(config);
+      this.auth = firebase_app__WEBPACK_IMPORTED_MODULE_0___default.a.auth();
+      this.db = firebase_app__WEBPACK_IMPORTED_MODULE_0___default.a.firestore();
+      this.providers = {
+        google: new firebase_app__WEBPACK_IMPORTED_MODULE_0___default.a.auth.GoogleAuthProvider()
+      };
+    }
+  }
+
+  async register(name, email, password) {
+    return this.auth.currentUser.updateProfile({
+      displayName: name
+    });
+  }
+
+  login(email, password) {
+    return this.auth.signInWithEmailAndPassword(email, password);
+  }
+
+  loginWithPopup(provider) {
+    if (this.providers[provider]) {
+      return this.auth.signInWithPopup(this.providers[provider]);
+    }
+  }
+
+  logout() {
+    return this.auth.signOut();
+  }
+
+  isInitialized() {
+    return new Promise(resolve => {
+      this.auth.onAuthStateChanged(resolve);
+    });
+  }
+
+  getCurrentUsername() {
+    return this.auth.currentUser && this.auth.currentUser.displayName;
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (new Firebase());
+
+/***/ }),
+
+/***/ "./hocs/withAuth.jsx":
+/*!***************************!*\
+  !*** ./hocs/withAuth.jsx ***!
+  \***************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! next/router */ "next/router");
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @chakra-ui/core */ "@chakra-ui/core");
+/* harmony import */ var _chakra_ui_core__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _firebase__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../firebase */ "./firebase/index.js");
+var _jsxFileName = "/home/lyubo/Projects/perseduler/src/hocs/withAuth.jsx";
+var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
+
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+
+
+
+
+
+const withAuth = Component => props => {
+  const [loading, setLoading] = react__WEBPACK_IMPORTED_MODULE_0___default.a.useState(true);
+  react__WEBPACK_IMPORTED_MODULE_0___default.a.useEffect(() => {
+    _firebase__WEBPACK_IMPORTED_MODULE_3__["default"].auth.onAuthStateChanged(authUser => {
+      if (authUser) {
+        setLoading(false);
+      } else {
+        next_router__WEBPACK_IMPORTED_MODULE_1___default.a.push("/");
+      }
+    });
+  }, []);
+
+  if (loading) {
+    return __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__["Spinner"], {
+      color: "red.500",
+      __self: undefined,
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 20,
+        columnNumber: 12
+      }
+    });
+  } else {
+    return __jsx(Component, _extends({}, props, {
+      __self: undefined,
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 22,
+        columnNumber: 12
+      }
+    }));
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (withAuth);
+
+/***/ }),
+
 /***/ "./pages/index.js":
 /*!************************!*\
   !*** ./pages/index.js ***!
@@ -397,14 +539,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var emotion_theming__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! emotion-theming */ "emotion-theming");
 /* harmony import */ var emotion_theming__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(emotion_theming__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @chakra-ui/core */ "@chakra-ui/core");
-/* harmony import */ var _chakra_ui_core__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _components_Hero__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Hero */ "./components/Hero.js");
-/* harmony import */ var _components_Container__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/Container */ "./components/Container.js");
-/* harmony import */ var _components_Main__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/Main */ "./components/Main.js");
-/* harmony import */ var _components_DarkModeSwitch__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/DarkModeSwitch */ "./components/DarkModeSwitch.js");
-/* harmony import */ var _components_CTA__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/CTA */ "./components/CTA.js");
-/* harmony import */ var _components_Footer__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/Footer */ "./components/Footer.js");
+/* harmony import */ var _hocs_withAuth__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../hocs/withAuth */ "./hocs/withAuth.jsx");
+/* harmony import */ var _chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @chakra-ui/core */ "@chakra-ui/core");
+/* harmony import */ var _chakra_ui_core__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _components_Hero__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/Hero */ "./components/Hero.js");
+/* harmony import */ var _components_Container__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/Container */ "./components/Container.js");
+/* harmony import */ var _components_Main__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/Main */ "./components/Main.js");
+/* harmony import */ var _components_DarkModeSwitch__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../components/DarkModeSwitch */ "./components/DarkModeSwitch.js");
+/* harmony import */ var _components_CTA__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../components/CTA */ "./components/CTA.js");
+/* harmony import */ var _components_Footer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../components/Footer */ "./components/Footer.js");
 var _jsxFileName = "/home/lyubo/Projects/perseduler/src/pages/index.js";
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
@@ -417,74 +560,75 @@ var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
 
 
 
-const Index = () => __jsx(_components_Container__WEBPACK_IMPORTED_MODULE_4__["Container"], {
-  __self: undefined,
-  __source: {
-    fileName: _jsxFileName,
-    lineNumber: 21,
-    columnNumber: 3
-  }
-}, __jsx(_components_Hero__WEBPACK_IMPORTED_MODULE_3__["Hero"], {
+
+const Index = () => __jsx(_components_Container__WEBPACK_IMPORTED_MODULE_5__["Container"], {
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
     lineNumber: 22,
-    columnNumber: 5
+    columnNumber: 3
   }
-}), __jsx(_components_Main__WEBPACK_IMPORTED_MODULE_5__["Main"], {
+}, __jsx(_components_Hero__WEBPACK_IMPORTED_MODULE_4__["Hero"], {
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
     lineNumber: 23,
     columnNumber: 5
   }
-}, __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__["Text"], {
+}), __jsx(_components_Main__WEBPACK_IMPORTED_MODULE_6__["Main"], {
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
     lineNumber: 24,
+    columnNumber: 5
+  }
+}, __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__["Text"], {
+  __self: undefined,
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 25,
     columnNumber: 7
   }
-}, "Example repository of ", __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__["Code"], {
+}, "Example repository of ", __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__["Code"], {
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 25,
+    lineNumber: 26,
     columnNumber: 31
   }
-}, "Next.js"), " + ", __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__["Code"], {
+}, "Next.js"), " + ", __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__["Code"], {
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 25,
+    lineNumber: 26,
     columnNumber: 54
   }
-}, "chakra-ui"), "."), __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__["List"], {
+}, "chakra-ui"), "."), __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__["List"], {
   spacing: 3,
   my: 0,
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 28,
+    lineNumber: 29,
     columnNumber: 7
   }
-}, __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__["ListItem"], {
+}, __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__["ListItem"], {
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 29,
+    lineNumber: 30,
     columnNumber: 9
   }
-}, __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__["ListIcon"], {
+}, __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__["ListIcon"], {
   icon: "check-circle",
   color: "green.500",
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 30,
+    lineNumber: 31,
     columnNumber: 11
   }
-}), __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__["Link"], {
+}), __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__["Link"], {
   isExternal: true,
   href: "https://chakra-ui.com",
   flexGrow: 1,
@@ -492,35 +636,35 @@ const Index = () => __jsx(_components_Container__WEBPACK_IMPORTED_MODULE_4__["Co
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 31,
+    lineNumber: 32,
     columnNumber: 11
   }
-}, "Chakra UI ", __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__["Icon"], {
+}, "Chakra UI ", __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__["Icon"], {
   name: "external-link",
   mx: "2px",
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 37,
+    lineNumber: 38,
     columnNumber: 23
   }
-}))), __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__["ListItem"], {
+}))), __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__["ListItem"], {
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 40,
+    lineNumber: 41,
     columnNumber: 9
   }
-}, __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__["ListIcon"], {
+}, __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__["ListIcon"], {
   icon: "check-circle",
   color: "green.500",
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 41,
+    lineNumber: 42,
     columnNumber: 11
   }
-}), __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__["Link"], {
+}), __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__["Link"], {
   isExternal: true,
   href: "https://nextjs.org",
   flexGrow: 1,
@@ -528,53 +672,53 @@ const Index = () => __jsx(_components_Container__WEBPACK_IMPORTED_MODULE_4__["Co
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 42,
+    lineNumber: 43,
     columnNumber: 11
   }
-}, "Next.js ", __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__["Icon"], {
+}, "Next.js ", __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__["Icon"], {
   name: "external-link",
   mx: "2px",
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 43,
+    lineNumber: 44,
     columnNumber: 21
   }
-}))))), __jsx(_components_DarkModeSwitch__WEBPACK_IMPORTED_MODULE_6__["DarkModeSwitch"], {
-  __self: undefined,
-  __source: {
-    fileName: _jsxFileName,
-    lineNumber: 49,
-    columnNumber: 5
-  }
-}), __jsx(_components_Footer__WEBPACK_IMPORTED_MODULE_8__["Footer"], {
+}))))), __jsx(_components_DarkModeSwitch__WEBPACK_IMPORTED_MODULE_7__["DarkModeSwitch"], {
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
     lineNumber: 50,
     columnNumber: 5
   }
-}, __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_2__["Text"], {
+}), __jsx(_components_Footer__WEBPACK_IMPORTED_MODULE_9__["Footer"], {
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
     lineNumber: 51,
-    columnNumber: 7
+    columnNumber: 5
   }
-}, "Next \u2764\uFE0F Chakra")), __jsx(_components_CTA__WEBPACK_IMPORTED_MODULE_7__["CTA"], {
+}, __jsx(_chakra_ui_core__WEBPACK_IMPORTED_MODULE_3__["Text"], {
   __self: undefined,
   __source: {
     fileName: _jsxFileName,
-    lineNumber: 53,
+    lineNumber: 52,
+    columnNumber: 7
+  }
+}, "Next \u2764\uFE0F Chakra")), __jsx(_components_CTA__WEBPACK_IMPORTED_MODULE_8__["CTA"], {
+  __self: undefined,
+  __source: {
+    fileName: _jsxFileName,
+    lineNumber: 54,
     columnNumber: 5
   }
 }));
 
-/* harmony default export */ __webpack_exports__["default"] = (withAuth(Object(emotion_theming__WEBPACK_IMPORTED_MODULE_1__["withTheme"])(Index)));
+/* harmony default export */ __webpack_exports__["default"] = (Object(_hocs_withAuth__WEBPACK_IMPORTED_MODULE_2__["default"])(Index));
 
 /***/ }),
 
-/***/ 4:
+/***/ 3:
 /*!******************************!*\
   !*** multi ./pages/index.js ***!
   \******************************/
@@ -605,6 +749,50 @@ module.exports = require("@chakra-ui/core");
 /***/ (function(module, exports) {
 
 module.exports = require("emotion-theming");
+
+/***/ }),
+
+/***/ "firebase/app":
+/*!*******************************!*\
+  !*** external "firebase/app" ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("firebase/app");
+
+/***/ }),
+
+/***/ "firebase/auth":
+/*!********************************!*\
+  !*** external "firebase/auth" ***!
+  \********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("firebase/auth");
+
+/***/ }),
+
+/***/ "firebase/firestore":
+/*!*************************************!*\
+  !*** external "firebase/firestore" ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("firebase/firestore");
+
+/***/ }),
+
+/***/ "next/router":
+/*!******************************!*\
+  !*** external "next/router" ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("next/router");
 
 /***/ }),
 
